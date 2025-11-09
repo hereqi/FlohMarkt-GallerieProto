@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flohmarkt Galerie</title>
+    <style>
+      :root {
+        --bg: #0f1115;
+        --card: #151823;
+        --text: #e8eefb;
+        --muted: #a9b4c7;
+        --accent: #4f8cff;
+        --shadow: 0 6px 16px rgba(0,0,0,0.25);
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        background: linear-gradient(180deg, #0e1014, #0b0d11 60%, #0a0c10);
+        color: var(--text);
+      }
+      header {
+        padding: 24px 16px 8px;
+        text-align: center;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 28px;
+        letter-spacing: 0.2px;
+      }
+      header p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .grid {
+        width: min(1200px, 94vw);
+        margin: 18px auto 48px;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+      }
+      .card {
+        background: linear-gradient(180deg, #171a23, #131622);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+        cursor: pointer;
+      }
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(0,0,0,0.35);
+        border-color: rgba(79,140,255,0.35);
+      }
+      .thumb {
+        width: 100%;
+        aspect-ratio: 1/1;
+        display: block;
+        object-fit: cover;
+        background: #0b0d12;
+      }
+      .card .title {
+        padding: 10px 12px 12px;
+        font-size: 14px;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+      .count {
+        color: var(--muted);
+        font-size: 12px;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.06);
+        padding: 2px 8px;
+        border-radius: 999px;
+      }
+      /* Modal */
+      .modal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(5, 7, 10, 0.7);
+        backdrop-filter: blur(4px);
+        z-index: 1000;
+        padding: 20px;
+      }
+      .modal.open { display: flex; }
+      .modal-card {
+        width: min(1100px, 96vw);
+        max-height: 90vh;
+        background: linear-gradient(180deg, #161926, #121523);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+        display: flex;
+        flex-direction: column;
+      }
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 12px 14px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+      }
+      .modal-header h2 {
+        margin: 0;
+        font-size: 16px;
+      }
+      .modal-close {
+        appearance: none;
+        border: 0;
+        border-radius: 10px;
+        padding: 8px 10px;
+        background: rgba(255,255,255,0.06);
+        color: var(--text);
+        cursor: pointer;
+        transition: background 0.12s ease, transform 0.08s ease;
+      }
+      .modal-close:hover { background: rgba(255,255,255,0.12); }
+      .modal-close:active { transform: translateY(1px); }
+      .modal-body {
+        padding: 14px;
+        overflow: auto;
+      }
+      .thumbs {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 12px;
+      }
+      .thumbs img {
+        width: 100%;
+        aspect-ratio: 1/1;
+        object-fit: cover;
+        border-radius: 10px;
+        background: #0b0d12;
+        border: 1px solid rgba(255,255,255,0.06);
+      }
+      footer {
+        width: min(1200px, 94vw);
+        margin: 0 auto 36px;
+        color: var(--muted);
+        font-size: 12px;
+        text-align: center;
+      }
+      .hint {
+        opacity: 0.9;
+      }
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Flohmarkt Galerie</h1>
+      <p>Einfach auf einen Artikel klicken, um alle Fotos zu sehen.</p>
+    </header>
+
+    <main class="grid" id="grid"></main>
+
+    <div class="modal" id="modal" aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true">
+        <div class="modal-header">
+          <h2 id="modalTitle"></h2>
+          <button class="modal-close" id="closeBtn" aria-label="Schließen">Schließen</button>
+        </div>
+        <div class="modal-body">
+          <div class="thumbs" id="modalThumbs"></div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p class="hint">
+        Hinweis: HEIC-Fotos werden am zuverlässigsten in Safari/iOS angezeigt.
+        Für volle Kompatibilität kann ich die Bilder auf Wunsch in JPG umwandeln.
+      </p>
+    </footer>
+
+    <script>
+      // Daten: Ordnername + Bildpfade (nur Fotos)
+      const items = [
+        { name: "BlauSchwarzeDunks", images: ["FloMarktGallerie/BlauSchwarzeDunks/IMG_1007.HEIC","FloMarktGallerie/BlauSchwarzeDunks/IMG_1008.HEIC","FloMarktGallerie/BlauSchwarzeDunks/IMG_1009.HEIC","FloMarktGallerie/BlauSchwarzeDunks/IMG_1010.HEIC","FloMarktGallerie/BlauSchwarzeDunks/IMG_1011.HEIC"] },
+        { name: "BooHooManFlaredJeans", images: ["FloMarktGallerie/BooHooManFlaredJeans/IMG_0974.HEIC","FloMarktGallerie/BooHooManFlaredJeans/IMG_0975.HEIC","FloMarktGallerie/BooHooManFlaredJeans/IMG_0976.HEIC","FloMarktGallerie/BooHooManFlaredJeans/IMG_0977.HEIC","FloMarktGallerie/BooHooManFlaredJeans/IMG_0978.HEIC","FloMarktGallerie/BooHooManFlaredJeans/IMG_0979.HEIC","FloMarktGallerie/BooHooManFlaredJeans/IMG_0980.HEIC","FloMarktGallerie/BooHooManFlaredJeans/IMG_0981.HEIC"] },
+        { name: "BrasilienTrikot", images: ["FloMarktGallerie/BrasilienTrikot/IMG_0929.HEIC","FloMarktGallerie/BrasilienTrikot/IMG_0930.HEIC","FloMarktGallerie/BrasilienTrikot/IMG_0931.HEIC","FloMarktGallerie/BrasilienTrikot/IMG_0932.HEIC","FloMarktGallerie/BrasilienTrikot/IMG_0933.HEIC","FloMarktGallerie/BrasilienTrikot/IMG_0934.HEIC"] },
+        { name: "BurberrySchal", images: ["FloMarktGallerie/BurberrySchal/IMG_0972.HEIC","FloMarktGallerie/BurberrySchal/IMG_0973.HEIC"] },
+        { name: "CriminalDamageTee", images: ["FloMarktGallerie/CriminalDamageTee/IMG_0946.HEIC","FloMarktGallerie/CriminalDamageTee/IMG_0947.HEIC","FloMarktGallerie/CriminalDamageTee/IMG_0948.HEIC"] },
+        { name: "GAPPullover", images: ["FloMarktGallerie/GAPPullover/IMG_0986.HEIC","FloMarktGallerie/GAPPullover/IMG_0987.HEIC","FloMarktGallerie/GAPPullover/IMG_0988.HEIC"] },
+        { name: "GrauerNikeTech", images: ["FloMarktGallerie/GrauerNikeTech/IMG_0907.HEIC","FloMarktGallerie/GrauerNikeTech/IMG_0909.HEIC","FloMarktGallerie/GrauerNikeTech/IMG_0910.HEIC","FloMarktGallerie/GrauerNikeTech/IMG_0911.HEIC"] },
+        { name: "GucciSlides", images: ["FloMarktGallerie/GucciSlides/IMG_1017.HEIC","FloMarktGallerie/GucciSlides/IMG_1018.HEIC"] },
+        { name: "HandyController", images: ["FloMarktGallerie/HandyController/IMG_0915.HEIC","FloMarktGallerie/HandyController/IMG_0916.HEIC","FloMarktGallerie/HandyController/IMG_0917.HEIC","FloMarktGallerie/HandyController/IMG_0918.HEIC"] },
+        { name: "JordanJersey", images: ["FloMarktGallerie/JordanJersey/IMG_0923.HEIC","FloMarktGallerie/JordanJersey/IMG_0924.HEIC","FloMarktGallerie/JordanJersey/IMG_0925.HEIC","FloMarktGallerie/JordanJersey/IMG_0926.HEIC","FloMarktGallerie/JordanJersey/IMG_0927.HEIC","FloMarktGallerie/JordanJersey/IMG_0928.HEIC"] },
+        { name: "KappaTrackPants", images: ["FloMarktGallerie/KappaTrackPants/IMG_0935.HEIC","FloMarktGallerie/KappaTrackPants/IMG_0936.HEIC","FloMarktGallerie/KappaTrackPants/IMG_0937.HEIC","FloMarktGallerie/KappaTrackPants/IMG_0938.HEIC","FloMarktGallerie/KappaTrackPants/IMG_0939.HEIC","FloMarktGallerie/KappaTrackPants/IMG_0940.HEIC"] },
+        { name: "KurzeNikeHose", images: ["FloMarktGallerie/KurzeNikeHose/IMG_0912.HEIC","FloMarktGallerie/KurzeNikeHose/IMG_0913.HEIC","FloMarktGallerie/KurzeNikeHose/IMG_0914.HEIC"] },
+        { name: "LA23Jersey", images: ["FloMarktGallerie/LA23Jersey/IMG_0919.HEIC","FloMarktGallerie/LA23Jersey/IMG_0920.HEIC","FloMarktGallerie/LA23Jersey/IMG_0921.HEIC","FloMarktGallerie/LA23Jersey/IMG_0922.HEIC"] },
+        { name: "MausMitUsb:Bluetooth", images: ["FloMarktGallerie/MausMitUsb:Bluetooth/IMG_1035.HEIC","FloMarktGallerie/MausMitUsb:Bluetooth/IMG_1036.HEIC","FloMarktGallerie/MausMitUsb:Bluetooth/IMG_1038.HEIC"] },
+        { name: "MenaceTee", images: ["FloMarktGallerie/MenaceTee/IMG_0949.HEIC","FloMarktGallerie/MenaceTee/IMG_0950.HEIC","FloMarktGallerie/MenaceTee/IMG_0951.HEIC"] },
+        { name: "MousePad", images: ["FloMarktGallerie/MousePad/IMG_0961.HEIC","FloMarktGallerie/MousePad/IMG_0962.HEIC"] },
+        { name: "NOFSjoggerPink", images: ["FloMarktGallerie/NOFSjoggerPink/IMG_0941.HEIC","FloMarktGallerie/NOFSjoggerPink/IMG_0942.HEIC","FloMarktGallerie/NOFSjoggerPink/IMG_0943.HEIC","FloMarktGallerie/NOFSjoggerPink/IMG_0944.HEIC"] },
+        { name: "PinkeCorteizSpringJacket", images: ["FloMarktGallerie/PinkeCorteizSpringJacket/IMG_0964.HEIC","FloMarktGallerie/PinkeCorteizSpringJacket/IMG_0965.HEIC","FloMarktGallerie/PinkeCorteizSpringJacket/IMG_0966.HEIC","FloMarktGallerie/PinkeCorteizSpringJacket/IMG_0967.HEIC","FloMarktGallerie/PinkeCorteizSpringJacket/IMG_0968.HEIC","FloMarktGallerie/PinkeCorteizSpringJacket/IMG_0969.HEIC","FloMarktGallerie/PinkeCorteizSpringJacket/IMG_0970.HEIC","FloMarktGallerie/PinkeCorteizSpringJacket/IMG_0971.HEIC"] },
+        { name: "PinkeEspritJacke", images: ["FloMarktGallerie/PinkeEspritJacke/IMG_0982.HEIC","FloMarktGallerie/PinkeEspritJacke/IMG_0983.HEIC","FloMarktGallerie/PinkeEspritJacke/IMG_0984.HEIC","FloMarktGallerie/PinkeEspritJacke/IMG_0985.HEIC"] },
+        { name: "RotGelbeDunks", images: ["FloMarktGallerie/RotGelbeDunks/IMG_1012.HEIC","FloMarktGallerie/RotGelbeDunks/IMG_1013.HEIC","FloMarktGallerie/RotGelbeDunks/IMG_1014.HEIC","FloMarktGallerie/RotGelbeDunks/IMG_1015.HEIC","FloMarktGallerie/RotGelbeDunks/IMG_1016.HEIC"] },
+        { name: "SchnelleBrillen", images: ["FloMarktGallerie/SchnelleBrillen/IMG_0953.HEIC","FloMarktGallerie/SchnelleBrillen/IMG_0954.HEIC","FloMarktGallerie/SchnelleBrillen/IMG_0955.HEIC"] },
+        { name: "SchwarzeReacts", images: ["FloMarktGallerie/SchwarzeReacts/IMG_0994.HEIC","FloMarktGallerie/SchwarzeReacts/IMG_0995.HEIC","FloMarktGallerie/SchwarzeReacts/IMG_0996.HEIC","FloMarktGallerie/SchwarzeReacts/IMG_0997.HEIC","FloMarktGallerie/SchwarzeReacts/IMG_0998.HEIC"] },
+        { name: "SchwarzeTracks", images: ["FloMarktGallerie/SchwarzeTracks/IMG_1019.HEIC","FloMarktGallerie/SchwarzeTracks/IMG_1020.HEIC","FloMarktGallerie/SchwarzeTracks/IMG_1021.HEIC","FloMarktGallerie/SchwarzeTracks/IMG_1022.HEIC","FloMarktGallerie/SchwarzeTracks/IMG_1023.HEIC"] },
+        { name: "Tastatur", images: ["FloMarktGallerie/Tastatur/IMG_1030.HEIC","FloMarktGallerie/Tastatur/IMG_1031.HEIC","FloMarktGallerie/Tastatur/IMG_1032.HEIC","FloMarktGallerie/Tastatur/IMG_1034.HEIC"] },
+        { name: "WeinroteNikeTennisSchuhe", images: ["FloMarktGallerie/WeinroteNikeTennisSchuhe/IMG_0989.HEIC","FloMarktGallerie/WeinroteNikeTennisSchuhe/IMG_0990.HEIC","FloMarktGallerie/WeinroteNikeTennisSchuhe/IMG_0991.HEIC","FloMarktGallerie/WeinroteNikeTennisSchuhe/IMG_0992.HEIC","FloMarktGallerie/WeinroteNikeTennisSchuhe/IMG_0993.HEIC"] },
+        { name: "WeissBlaueNikeDunks", images: ["FloMarktGallerie/WeissBlaueNikeDunks/IMG_0999-2.HEIC","FloMarktGallerie/WeissBlaueNikeDunks/IMG_1001.HEIC","FloMarktGallerie/WeissBlaueNikeDunks/IMG_1002.HEIC","FloMarktGallerie/WeissBlaueNikeDunks/IMG_1003.HEIC","FloMarktGallerie/WeissBlaueNikeDunks/IMG_1004.HEIC","FloMarktGallerie/WeissBlaueNikeDunks/IMG_1005.HEIC"] },
+        { name: "WeisseTracks", images: ["FloMarktGallerie/WeisseTracks/IMG_1024.HEIC","FloMarktGallerie/WeisseTracks/IMG_1025.HEIC","FloMarktGallerie/WeisseTracks/IMG_1026.HEIC","FloMarktGallerie/WeisseTracks/IMG_1027.HEIC","FloMarktGallerie/WeisseTracks/IMG_1028.HEIC","FloMarktGallerie/WeisseTracks/IMG_1029.HEIC"] },
+        { name: "WeissRotSchwarzeMidJordans", images: ["FloMarktGallerie/WeissRotSchwarzeMidJordans/IMG_0956.HEIC","FloMarktGallerie/WeissRotSchwarzeMidJordans/IMG_0957.HEIC","FloMarktGallerie/WeissRotSchwarzeMidJordans/IMG_0958.HEIC","FloMarktGallerie/WeissRotSchwarzeMidJordans/IMG_0959.HEIC","FloMarktGallerie/WeissRotSchwarzeMidJordans/IMG_0960.HEIC"] }
+      ];
+
+      function createCard(item) {
+        const cover = item.images[0];
+        const el = document.createElement("article");
+        el.className = "card";
+        el.innerHTML = `
+          <img class="thumb" alt="${item.name}" src="${cover}">
+          <div class="title">
+            <span>${item.name}</span>
+            <span class="count">${item.images.length} Foto${item.images.length === 1 ? "" : "s"}</span>
+          </div>
+        `;
+        el.addEventListener("click", () => openModal(item));
+        return el;
+      }
+
+      const grid = document.getElementById("grid");
+      items.forEach(item => grid.appendChild(createCard(item)));
+
+      const modal = document.getElementById("modal");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalThumbs = document.getElementById("modalThumbs");
+      const closeBtn = document.getElementById("closeBtn");
+
+      function openModal(item) {
+        modalTitle.textContent = item.name;
+        modalThumbs.innerHTML = item.images.map(src => `<img loading="lazy" alt="${item.name}" src="${src}">`).join("");
+        modal.classList.add("open");
+        modal.setAttribute("aria-hidden", "false");
+      }
+      function closeModal() {
+        modal.classList.remove("open");
+        modal.setAttribute("aria-hidden", "true");
+      }
+      closeBtn.addEventListener("click", closeModal);
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+      });
+    </script>
+  </body>
+  </html>
+
+

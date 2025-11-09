@@ -1,0 +1,12 @@
+[build]
+  command = ""
+  publish = "."
+
+[dev]
+  framework = "#static"
+  targetPort = 0
+
+[images]
+  remote_images = ["*"]
+
+
