@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Meine Produkte</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header>
+      <h1>Lions Flohmarkt</h1>
+      <p>Klicken Sie auf ein Kärtchen, um mehr Informationen zu sehen.</p>
+    </header>
+    <section class="toolbar" aria-label="Filter">
+      <input id="q" placeholder="Suchen: Name, Kategorie ..." />
+      <button class="filter-btn" id="filterConditionBtn" aria-expanded="false">Zustand</button>
+      <button class="filter-btn" id="filterSizeBtn" aria-expanded="false">Größe</button>
+      <button class="filter-btn" id="filterColorBtn" aria-expanded="false">Farbe</button>
+      <button class="filter-btn" id="filterCategoryBtn" aria-expanded="false">Kategorie</button>
+      <div class="popover" id="conditionPanel" role="dialog" aria-label="Zustand wählen"></div>
+      <div class="popover" id="sizePanel" role="dialog" aria-label="Größe wählen"></div>
+      <div class="popover" id="colorPanel" role="dialog" aria-label="Farbe wählen"></div>
+      <div class="popover" id="categoryPanel" role="dialog" aria-label="Kategorie wählen"></div>
+    </section>
+
+    <ul id="grid"></ul> 
+
+    <div class="modal" id="modal" aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true">
+        <div class="modal-header">
+          <h2 id="modalTitle"></h2>
+          <button class="modal-close" id="closeBtn" aria-label="Schließen">Schließen</button>
+        </div>
+        <div class="modal-body">
+          <div class="viewer" id="viewer">
+            <div class="meta" id="meta" aria-live="polite"></div>
+            <button class="nav-btn left" id="prevBtn" aria-label="Vorheriges Bild">‹</button>
+            <img id="viewerImg" alt="">
+            <button class="nav-btn right" id="nextBtn" aria-label="Nächstes Bild">›</button>
+            <div class="counter" id="counter"></div>
+          </div>
+          <div class="strip" id="modalStrip" aria-label="Vorschaubilder"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="app.js" defer></script>
+  </body>
+  </html>
+
+
