@@ -178,13 +178,12 @@ img[src*="PinkeCorteizSpringJacket/"] {
   header p { font-size: 13px; }
 
   .toolbar {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr; /* zwei Filter pro Reihe */
     gap: 10px;
   }
-  .toolbar input,
-  .filter-btn {
-    width: 100%;
-  }
+  .toolbar input { width: 100%; grid-column: 1 / -1; text-align: center; }
+  .toolbar input:focus { text-align: left; }
+  .filter-btn { width: 100%; }
   /* Popover auf volle Breite unter dem Eingabebereich */
   .popover {
     left: 2vw !important;
