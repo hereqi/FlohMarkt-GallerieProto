@@ -66,13 +66,20 @@ header p { margin: 0; color: var(--muted); font-size: 14px; }
   overflow: auto;
   padding: 0 6px;
   display: grid;
-  gap: 6px;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 8px 12px;
+  text-align: left;
 }
 .option {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 14px;
+  justify-content: flex-start;
+}
+.option input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
 }
 .actions {
   display: flex;
@@ -191,6 +198,9 @@ img[src*="PinkeCorteizSpringJacket/"] {
     width: 96vw;
     min-width: 0;
   }
+  .options {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
+  }
   ul#grid {
     width: 94vw;
     grid-template-columns: 1fr;
@@ -200,6 +210,12 @@ img[src*="PinkeCorteizSpringJacket/"] {
   .price-tag { font-size: 15px; }
 }
 
+/* Mehr Spalten in Popovers auf größeren Screens */
+@media (min-width: 900px) {
+  .options {
+    grid-template-columns: repeat(3, minmax(140px, 1fr));
+  }
+}
 /* Modal */
 .modal {
   position: fixed;
