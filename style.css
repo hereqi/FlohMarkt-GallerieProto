@@ -172,6 +172,35 @@ img[src*="PinkeCorteizSpringJacket/"] {
   transform-origin: center center !important;
 }
 
+/* ---------- Responsive: Mobile Optimierungen ---------- */
+@media (max-width: 768px) {
+  header h1 { font-size: 22px; }
+  header p { font-size: 13px; }
+
+  .toolbar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .toolbar input,
+  .filter-btn {
+    width: 100%;
+  }
+  /* Popover auf volle Breite unter dem Eingabebereich */
+  .popover {
+    left: 2vw !important;
+    right: 2vw;
+    width: 96vw;
+    min-width: 0;
+  }
+  ul#grid {
+    width: 94vw;
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .card .title { font-size: 15px; }
+  .price-tag { font-size: 15px; }
+}
+
 /* Modal */
 .modal {
   position: fixed;
