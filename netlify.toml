@@ -1,6 +1,6 @@
 [build]
   base = "web"
-  command = "npm ci && npm run build"
+  command = "mkdir -p public && cp -R ../FloMarktGallerie public/ && npm ci && npm run build"
   publish = "web/dist"
 
 [dev]

@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Copy gallery assets into web/public
+        run: mkdir -p web/public && cp -R FloMarktGallerie web/public/
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
