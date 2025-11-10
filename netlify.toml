@@ -1,6 +1,7 @@
 [build]
-  command = ""
-  publish = "."
+  base = "web"
+  command = "npm ci && npm run build"
+  publish = "web/dist"
 
 [dev]
   framework = "#static"
