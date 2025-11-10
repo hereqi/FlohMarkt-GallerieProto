@@ -116,7 +116,13 @@ function openModal(item) {
   viewerImg.style.transform = item.rotate180 ? "rotate(180deg)" : "";
   // Metadaten oben anzeigen
   const parts = [];
-  if (typeof item.price !== "undefined") parts.push(`CHF ${item.price}`);
+  if (typeof item.price !== "undefined") {
+    if (item.oldPrice) {
+      parts.push(`CHF ${item.price} (statt CHF ${item.oldPrice})`);
+    } else {
+      parts.push(`CHF ${item.price}`);
+    }
+  }
   if (item.condition) parts.push(item.condition.replace("_"," "));
   if (item.size) parts.push(item.size);
   if (item.colors && item.colors.length) parts.push((item.colors).join(" / "));
@@ -167,32 +173,32 @@ function annotate(items) {
   const meta = {
     GrauerNikeTech: { displayName: "Nike Tech Fleece – Grau", size: "L", condition: "wie_neu", colors: ["grau"], price: 50, category: "jacke", tags: ["jacke","nike","tech"] },
     KurzeNikeHose: { displayName: "Nike Hose – Kurz, Schwarz", size: "XL", condition: "gebraucht", colors: ["schwarz"], price: 15, category: "hose", tags: ["hose","nike"] },
-    MousePad: { displayName: "Gaming Mousepad 88×40", size: "88x40", condition: "gut", colors: ["schwarz"], price: 88, category: "elektronik", tags: ["elektronik","zubehoer"] },
-    BrasilienTrikot: { displayName: "Brasilien Fußballtrikot – Gelb", size: "L", condition: "wie_neu", colors: ["gelb","gruen"], price: 75, category: "trikot", tags: ["trikot"] },
+    MousePad: { displayName: "Gaming Mousepad 88×40", size: "88x40", condition: "gut", colors: ["schwarz"], price: 88, category: "elektronik", soldOut: true, tags: ["elektronik","zubehoer"] },
+    BrasilienTrikot: { displayName: "Brasilien Fußballtrikot – Gelb", size: "L", condition: "wie_neu", colors: ["gelb","gruen"], price: 78, oldPrice: 100, category: "trikot", tags: ["trikot"] },
     KappaTrackPants: { displayName: "Kappa Trackpants – Schwarz", size: "XXXL", condition: "wie_neu", colors: ["schwarz"], note: "fällt klein aus", price: 60, category: "hose", tags: ["hose","kappa"] },
     CriminalDamageTee: { displayName: "Criminal Damage T‑Shirt – Verwaschen", size: "M", condition: "gebraucht", colors: ["schwarz"], price: 5, category: "shirt", tags: ["shirt","tiger"] },
     MenaceTee: { displayName: "Menace T‑Shirt – Weiß/Rot/Blau", size: "L", condition: "gebraucht", colors: ["weiß","rot","blau"], price: 10, category: "shirt", tags: ["shirt","menace"] },
     WeissRotSchwarzeMidJordans: { displayName: "Nike Air Jordan Mid – Weiß/Rot/Schwarz", size: "43", condition: "brandneu", colors: ["rot","weiß","schwarz"], price: 60, category: "schuhe", tags: ["schuhe","mid"] },
-    BooHooManFlaredJeans: { displayName: "BoohooMAN Flared Jeans – Schwarz/Grau", size: "50", condition: "wie_neu", colors: ["schwarz","grau"], price: 35, rotate180: true, category: "hose", tags: ["hose","flared"] },
-    PinkeEspritJacke: { displayName: "Esprit Jacke – Pink", size: "L", condition: "wie_neu", colors: ["pink"], price: 59, rotate180: true, category: "jacke", tags: ["jacke","esprit"] },
+    BooHooManFlaredJeans: { displayName: "BoohooMAN Flared Jeans – Schwarz/Grau", size: "50", condition: "wie_neu", colors: ["schwarz","grau"], price: 35, oldPrice: 78, rotate180: true, category: "hose", tags: ["hose","flared"] },
+    PinkeEspritJacke: { displayName: "Esprit Jacke – Pink", size: "L", condition: "wie_neu", colors: ["pink"], price: 59, oldPrice: 120, rotate180: true, category: "jacke", tags: ["jacke","esprit"] },
     WeinroteNikeTennisSchuhe: { displayName: "Nike Tennisschuhe – Weinrot", size: "44", condition: "wie_neu", colors: ["weinrot"], price: 55, category: "schuhe", tags: ["schuhe"] },
     SchwarzeReacts: { displayName: "Nike React – Schwarz", size: "44", condition: "gebraucht", colors: ["schwarz"], price: 15, category: "schuhe", tags: ["schuhe","react"] },
     WeissBlaueNikeDunks: { displayName: "Nike Dunk – Weiß/Blau", size: "44", condition: "gut", colors: ["weiß","blau"], price: 40, rotate180: true, category: "schuhe", tags: ["schuhe","dunks"] },
     BlauSchwarzeDunks: { displayName: "Nike Dunk – Blau/Schwarz", size: "44", condition: "gut", colors: ["blau","schwarz"], price: 55, category: "schuhe", tags: ["schuhe","dunks"] },
     RotGelbeDunks: { displayName: "Nike Dunk – Rot/Gelb", size: "44.5", condition: "gut", colors: ["rot","gelb"], price: 99, category: "schuhe", tags: ["schuhe","dunks"] },
     GucciSlides: { displayName: "Gucci Slides – Schwarz", size: "44", condition: "gut", colors: ["schwarz"], price: 15, category: "schuhe", tags: ["slides"] },
-    SchwarzeTracks: { displayName: "Balenciaga Track – Schwarz", size: "44", condition: "gebraucht", colors: ["schwarz"], price: 25, category: "schuhe", tags: ["schuhe","track"] },
+    SchwarzeTracks: { displayName: "Balenciaga Track – Schwarz", size: "44", condition: "gebraucht", colors: ["schwarz"], price: 25, oldPrice: 35, category: "schuhe", tags: ["schuhe","track"] },
     WeisseTracks: { displayName: "Balenciaga Track – Weiß", size: "44", condition: "gut", colors: ["weiß"], price: 35, category: "schuhe", tags: ["schuhe","track"] },
     BurberrySchal: { displayName: "Burberry Schal – Check", size: "onesize", condition: "wie_neu", colors: ["grau","rot","weiß"], price: 15, category: "schal", tags: ["schal"] },
     GAPPullover: { displayName: "GAP Pullover – Schwarz", size: "L", condition: "gut", colors: ["schwarz"], price: 30, category: "pullover", tags: ["pullover","gap"] },
     HandyController: { displayName: "Game Controller – Handy", size: "onesize", condition: "brandneu", colors: ["schwarz"], price: 20, category: "elektronik", tags: ["controller","elektronik"] },
     JordanJersey: { displayName: "Jordan Jersey – Schwarz/Rot", size: "M", condition: "gut", colors: ["schwarz","rot"], price: 25, category: "trikot", tags: ["trikot","jordan"] },
     LA23Jersey: { displayName: "LA 23 Jersey – Grau", size: "XL", condition: "wie_neu", colors: ["grau"], price: 15, category: "trikot", tags: ["trikot"] },
-    "MausMitUsb:Bluetooth": { displayName: "Maus – USB & Bluetooth", size: "onesize", condition: "gut", colors: ["schwarz"], price: 10, category: "elektronik", tags: ["maus","elektronik"] },
-    NOFSjoggerPink: { displayName: "NOFS Jogger – Pink", size: "XL", condition: "brandneu", colors: ["pink"], price: 85, category: "hose", tags: ["hose"] },
-    PinkeCorteizSpringJacket: { displayName: "Corteiz Spring Jacket – Pink", size: "L", condition: "gut", colors: ["pink"], price: 99, rotate180: true, category: "jacke", tags: ["jacke","corteiz"] },
-    SchnelleBrillen: { displayName: "Sportbrille", size: "onesize", condition: "brandneu", colors: ["schwarz"], price: 9, category: "brille", tags: ["brille","accessoire"] },
-    Tastatur: { displayName: "Tastatur – Schwarz", size: "onesize", condition: "wie_neu", colors: ["schwarz"], price: 49, category: "elektronik", tags: ["tastatur","elektronik"] },
+    "MausMitUsb:Bluetooth": { displayName: "Maus – USB & Bluetooth", size: "onesize", condition: "gut", colors: ["schwarz"], price: 10, category: "elektronik", soldOut: true, tags: ["maus","elektronik"] },
+    NOFSjoggerPink: { displayName: "NOFS Jogger – Pink", size: "XL", condition: "brandneu", colors: ["pink"], price: 85, oldPrice: 110, category: "hose", tags: ["hose"] },
+    PinkeCorteizSpringJacket: { displayName: "Corteiz Spring Jacket – Pink", size: "L", condition: "gut", colors: ["pink"], price: 99, oldPrice: 120, rotate180: true, category: "jacke", tags: ["jacke","corteiz"] },
+    SchnelleBrillen: { displayName: "Sportbrille", size: "onesize", condition: "brandneu", colors: ["schwarz"], price: 9, oldPrice: 18, category: "brille", tags: ["brille","accessoire"] },
+    Tastatur: { displayName: "Tastatur – Schwarz", size: "onesize", condition: "wie_neu", colors: ["schwarz"], price: 49, category: "elektronik", soldOut: true, tags: ["tastatur","elektronik"] },
   };
   return items.map(it => {
     const m = meta[it.name] || {};
@@ -316,22 +322,47 @@ function render() {
   visible.forEach((item) => {
     const li = document.createElement("li");
     li.className = "item";
+    if (item.soldOut) li.classList.add("soldout");
     li.appendChild(createCoverImg(item));
+    if (item.soldOut) {
+      const so = document.createElement("span");
+      so.className = "soldout-ribbon";
+      so.textContent = "AUSVERKAUFT";
+      li.appendChild(so);
+    }
+    if (item.oldPrice && item.price && item.price < item.oldPrice) {
+      const pct = Math.round((1 - (item.price / item.oldPrice)) * 100);
+      if (pct > 0) {
+        const db = document.createElement("span");
+        db.className = "discount-badge";
+        db.textContent = `-${pct}%`;
+        db.setAttribute("aria-label", `Rabatt ${pct} Prozent`);
+        li.appendChild(db);
+      }
+    }
     const label = document.createElement("div");
     label.className = "label";
     const title = item.displayName || item.name;
+    const priceHtml = typeof item.price !== "undefined"
+      ? `<div class="price-group">${item.oldPrice ? `<span class="old-price">CHF ${item.oldPrice}</span>` : ""}<span class="price-tag">CHF ${item.price}</span></div>`
+      : "";
     label.innerHTML = `
       <div class="title">${title}</div>
       <div class="meta-line">
-        <span class="price-tag">${typeof item.price !== "undefined" ? `CHF ${item.price}` : ""}</span>
-        <span class="badges">
+        ${priceHtml}
+        <div class="badge-stack">
           ${item.size ? `<span class="badge">${item.size}</span>` : ""}
           ${item.condition ? `<span class="badge">${item.condition.replace("_"," ")}</span>` : ""}
-        </span>
+        </div>
       </div>
     `;
     li.appendChild(label);
-    li.addEventListener("click", () => openModal(item));
+    if (!item.soldOut) {
+      li.addEventListener("click", () => openModal(item));
+    } else {
+      li.setAttribute("aria-disabled", "true");
+      li.title = "Ausverkauft";
+    }
     grid.appendChild(li);
   });
 }
